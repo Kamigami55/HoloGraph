@@ -5,10 +5,10 @@
 
 extension Github {
   class GitHubUserDataQuery: GraphQLQuery {
-    static let operationName: String = "GitHubUserDataQuery"
+    static let operationName: String = "GitHubUserData"
     static let operationDocument: ApolloAPI.OperationDocument = .init(
       definition: .init(
-        #"query GitHubUserDataQuery($userName: String!) { user(login: $userName) { __typename contributionsCollection { __typename contributionCalendar { __typename totalContributions weeks { __typename contributionDays { __typename contributionCount date } } } } } }"#
+        #"query GitHubUserData($userName: String!) { user(login: $userName) { __typename contributionsCollection { __typename contributionCalendar { __typename totalContributions weeks { __typename contributionDays { __typename contributionCount date } } } } } }"#
       ))
 
     public var userName: String
