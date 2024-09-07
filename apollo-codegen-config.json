@@ -1,5 +1,5 @@
 {
-  "schemaNamespace" : "github-schema.graphql",
+  "schemaNamespace" : "github",
   "input" : {
     "operationSearchPaths" : [
       "**/*.graphql"
@@ -14,7 +14,7 @@
       }
     },
     "schemaTypes" : {
-      "path" : "./github-schema.graphql",
+      "path" : "./github",
       "moduleType" : {
         "embeddedInTarget" : {
           "name" : "HoloGraph"
