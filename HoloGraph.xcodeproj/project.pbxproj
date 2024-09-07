@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		9B25902A2C8CE86B00E045C6 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 9B2590292C8CE86B00E045C6 /* RealityKitContent */; };
+		9B9927392C8CFB1F00EE6D6C /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 9B9927382C8CFB1F00EE6D6C /* Apollo */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B25902A2C8CE86B00E045C6 /* RealityKitContent in Frameworks */,
+				9B9927392C8CFB1F00EE6D6C /* Apollo in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,6 +110,7 @@
 			name = HoloGraph;
 			packageProductDependencies = (
 				9B2590292C8CE86B00E045C6 /* RealityKitContent */,
+				9B9927382C8CFB1F00EE6D6C /* Apollo */,
 			);
 			productName = HoloGraph;
 			productReference = 9B2590242C8CE86B00E045C6 /* HoloGraph.app */;
@@ -164,6 +167,9 @@
 				Base,
 			);
 			mainGroup = 9B25901B2C8CE86B00E045C6;
+			packageReferences = (
+				9B9927372C8CFB1F00EE6D6C /* XCRemoteSwiftPackageReference "apollo-ios" */,
+			);
 			productRefGroup = 9B2590252C8CE86B00E045C6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -460,10 +466,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		9B9927372C8CFB1F00EE6D6C /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.15.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		9B2590292C8CE86B00E045C6 /* RealityKitContent */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RealityKitContent;
+		};
+		9B9927382C8CFB1F00EE6D6C /* Apollo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9B9927372C8CFB1F00EE6D6C /* XCRemoteSwiftPackageReference "apollo-ios" */;
+			productName = Apollo;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
