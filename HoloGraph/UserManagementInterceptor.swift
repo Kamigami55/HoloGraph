@@ -8,6 +8,8 @@
 import Foundation
 import Apollo
 
+let GITHUB_API_TOKEN = ProcessInfo.processInfo.environment["GITHUB_API_TOKEN"] ?? ""
+
 class UserManagementInterceptor: ApolloInterceptor {
     public var id: String = UUID().uuidString
 
@@ -35,7 +37,7 @@ class UserManagementInterceptor: ApolloInterceptor {
         completion: @escaping (Result<GraphQLResult<Operation.Data>, Error>) -> Void
     ) {
         self.addTokenAndProceed(
-            "GITHUB_TOKEN",
+            GITHUB_API_TOKEN,
             to: request,
             chain: chain,
             response: response,
