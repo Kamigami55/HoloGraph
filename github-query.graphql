@@ -1,4 +1,4 @@
-query($userName:String!) { 
+query GitHubUserDataQuery ($userName:String!) {
   user(login: $userName){
     contributionsCollection {
       contributionCalendar {
