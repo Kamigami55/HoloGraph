@@ -47,6 +47,20 @@ struct VolumetricView: View {
         let totalWidth = Float(weeksInYear - 1) * spacing
         let totalDepth = Float(daysInWeek - 1) * spacing
         
+        // Create and add the platform
+        let platformWidth = totalWidth + cubeWidth
+        let platformDepth = totalDepth + cubeWidth
+        let platformHeight: Float = 0.005
+        let platformColor = UIColor.gray.withAlphaComponent(0.5)
+
+        let gridMaterial: RealityKit.Material = createGridMaterial(width: platformWidth, height: platformDepth, color: .gray)
+        let platform = ModelEntity(
+            mesh: .generatePlane(width: platformWidth, depth: platformDepth, cornerRadius: 0),
+            materials: [gridMaterial]
+        )
+        platform.position = SIMD3<Float>(0, -0.001, 0)  // Slightly below the cubes
+        rootEntity.addChild(platform)
+        
         for (index, day) in appModel.contributionData.enumerated() {
             let weekIndex = index / daysInWeek
             let dayIndex = index % daysInWeek
@@ -79,6 +93,39 @@ struct VolumetricView: View {
         case 7...9: return .systemGreen.withAlphaComponent(0.7)
         default: return .systemGreen
         }
+    }
+    
+    private func createGridMaterial(width: Float, height: Float, color: UIColor) -> RealityKit.Material {
+        let size = CGSize(width: 512, height: 512)
+        let renderer = UIGraphicsImageRenderer(size: size)
+        let image = renderer.image { context in
+            color.setStroke()
+            let path = UIBezierPath()
+            let stepX = size.width / CGFloat(width / 0.02)
+            let stepY = size.height / CGFloat(height / 0.02)
+            
+            for i in 0...Int(width / 0.02) {
+                let x = CGFloat(i) * stepX
+                path.move(to: CGPoint(x: x, y: 0))
+                path.addLine(to: CGPoint(x: x, y: size.height))
+            }
+            
+            for i in 0...Int(height / 0.02) {
+                let y = CGFloat(i) * stepY
+                path.move(to: CGPoint(x: 0, y: y))
+                path.addLine(to: CGPoint(x: size.width, y: y))
+            }
+            
+            path.lineWidth = 1
+            path.stroke()
+        }
+        
+        let texture = try! TextureResource.generate(from: image.cgImage!, options: .init(semantic: .color))
+        
+        var material = UnlitMaterial()
+        material.color = .init(tint: .white.withAlphaComponent(0.3), texture: MaterialParameters.Texture(texture))
+        
+        return material
     }
 }
 
