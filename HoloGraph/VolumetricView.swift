@@ -6,31 +6,54 @@ struct VolumetricView: View {
     @Environment(AppModel.self) private var appModel
     @State private var rotation: Angle = .zero
     @State private var lastRotation: Angle = .zero
+    @State private var scale: Float = 0.5
     
     var body: some View {
         VStack {
             Text("GitHub Contributions")
                 .font(.largeTitle)
             
-            RealityView { content in
-                let contributionGraph = createContributionGraph()
-                content.add(contributionGraph)
-            } update: { content in
-                if let contributionGraph = content.entities.first {
-                    contributionGraph.transform.rotation = simd_quatf(angle: Float(rotation.radians), axis: [0, 1, 0])
+            GeometryReader { geometry in
+                RealityView { content in
+                    let contributionGraph = createContributionGraph()
+                    content.add(contributionGraph)
+                    
+                    // Add a camera to the scene
+                    let camera = PerspectiveCamera()
+                    camera.look(
+                        at: contributionGraph.position,
+                        from: SIMD3(x: 0, y: 0.5, z: 2),
+                        relativeTo: nil
+                    )
+                    content.add(camera)
+                    
+                } update: { content in
+                    if let contributionGraph = content.entities.first {
+                        contributionGraph.transform.rotation = simd_quatf(angle: Float(rotation.radians), axis: [0, 1, 0])
+                        contributionGraph.transform.scale = SIMD3(repeating: scale)
+                    }
                 }
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            let delta = value.translation.width
+                            rotation = lastRotation + Angle(degrees: delta)
+                        }
+                        .onEnded { _ in
+                            lastRotation = rotation
+                        }
+                )
+                .gesture(
+                    MagnificationGesture()
+                        .onChanged { value in
+                            scale = Float(value) * scale
+                        }
+                        .onEnded { _ in
+                            scale = max(0.5, min(scale, 2.0))
+                        }
+                )
+                .frame(width: geometry.size.width, height: geometry.size.height)
             }
-            .frame(width: 600, height: 400)
-            .gesture(
-                DragGesture()
-                    .onChanged { value in
-                        let delta = value.translation.width
-                        rotation = lastRotation + Angle(degrees: delta)
-                    }
-                    .onEnded { _ in
-                        lastRotation = rotation
-                    }
-            )
         }
         .padding()
     }
