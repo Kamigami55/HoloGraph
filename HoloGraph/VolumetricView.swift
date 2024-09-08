@@ -20,7 +20,7 @@ struct VolumetricView: View {
                     contributionGraph.transform.rotation = simd_quatf(angle: Float(rotation.radians), axis: [0, 1, 0])
                 }
             }
-            .frame(width: 400, height: 400)
+            .frame(width: 600, height: 400)
             .gesture(
                 DragGesture()
                     .onChanged { value in
@@ -38,13 +38,17 @@ struct VolumetricView: View {
     private func createContributionGraph() -> Entity {
         let rootEntity = Entity()
         
-        let gridSize = 7 // 7x7 grid for a week
+        let weeksInYear = 52
+        let daysInWeek = 7
         let spacing: Float = 0.02
         let maxHeight: Float = 0.1
         
         for (index, day) in appModel.contributionData.enumerated() {
-            let x = Float(index % gridSize) * spacing
-            let z = Float(index / gridSize) * spacing
+            let weekIndex = index / daysInWeek
+            let dayIndex = index % daysInWeek
+            
+            let x = Float(weekIndex) * spacing
+            let z = Float(dayIndex) * spacing
             
             let height = Float(day.contributionCount) / Float(appModel.contributionData.max { $0.contributionCount < $1.contributionCount }?.contributionCount ?? 1) * maxHeight
             
@@ -82,8 +86,8 @@ struct VolumetricView: View {
 extension AppModel {
     static func sampleModel() -> AppModel {
         let model = AppModel()
-        model.totalContributions = 365
-        model.contributionData = (0..<49).map { index in
+        model.totalContributions = 1000
+        model.contributionData = (0..<365).map { index in
             let date = Date().addingTimeInterval(TimeInterval(-index * 86400))
             let dateString = ISO8601DateFormatter().string(from: date)
             return ContributionDay(date: dateString, contributionCount: Int.random(in: 0...10))
