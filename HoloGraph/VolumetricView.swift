@@ -47,9 +47,12 @@ struct VolumetricView: View {
         let totalWidth = Float(weeksInYear - 1) * spacing
         let totalDepth = Float(daysInWeek - 1) * spacing
         
+        // Add a margin around the platform
+        let platformMargin: Float = 0.05  // Adjust this value to increase or decrease the margin
+        
         // Create and add the platform
-        let platformWidth = totalWidth + cubeWidth
-        let platformDepth = totalDepth + cubeWidth
+        let platformWidth = totalWidth + cubeWidth + platformMargin
+        let platformDepth = totalDepth + cubeWidth + platformMargin
         let platformHeight: Float = 0.02  // Increased thickness
         let platformColor = UIColor.gray.withAlphaComponent(0.5)
 
