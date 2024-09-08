@@ -1,8 +1,11 @@
 import SwiftUI
 import RealityKit
+import Foundation
 
 struct VolumetricView: View {
     @Environment(AppModel.self) private var appModel
+    @State private var rotation: Angle = .zero
+    @State private var lastRotation: Angle = .zero
     
     var body: some View {
         VStack {
@@ -12,8 +15,22 @@ struct VolumetricView: View {
             RealityView { content in
                 let contributionGraph = createContributionGraph()
                 content.add(contributionGraph)
+            } update: { content in
+                if let contributionGraph = content.entities.first {
+                    contributionGraph.transform.rotation = simd_quatf(angle: Float(rotation.radians), axis: [0, 1, 0])
+                }
             }
             .frame(width: 400, height: 400)
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        let delta = value.translation.width
+                        rotation = lastRotation + Angle(degrees: delta)
+                    }
+                    .onEnded { _ in
+                        lastRotation = rotation
+                    }
+            )
         }
         .padding()
     }
