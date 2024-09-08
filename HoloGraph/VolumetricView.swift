@@ -59,5 +59,18 @@ struct VolumetricView: View {
 
 #Preview {
     VolumetricView()
-        .environment(AppModel())
+        .environment(AppModel.sampleModel())
+}
+
+extension AppModel {
+    static func sampleModel() -> AppModel {
+        let model = AppModel()
+        model.totalContributions = 365
+        model.contributionData = (0..<49).map { index in
+            let date = Date().addingTimeInterval(TimeInterval(-index * 86400))
+            let dateString = ISO8601DateFormatter().string(from: date)
+            return ContributionDay(date: dateString, contributionCount: Int.random(in: 0...10))
+        }
+        return model
+    }
 }
