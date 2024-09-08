@@ -19,8 +19,14 @@ class AppModel {
     }
     var immersiveSpaceState = ImmersiveSpaceState.closed
     
-    // Add this line
     var isVolumetricWindowVisible = false
     
     var totalContributions: Int?
+
+    struct ContributionDay {
+        let date: String  // Changed from Date to String
+        let contributionCount: Int
+    }
+
+    var contributionData: [ContributionDay] = []
 }

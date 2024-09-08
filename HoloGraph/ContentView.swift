@@ -58,7 +58,21 @@ struct ContentView: View {
                     guard let data = try? result.get().data else { return }
                     
                     appModel.totalContributions = data.user?.contributionsCollection.contributionCalendar.totalContributions
-                    print(appModel.totalContributions ?? 0)
+                    
+                    // Parse and store contribution data
+                    if let weeks = data.user?.contributionsCollection.contributionCalendar.weeks {
+                        appModel.contributionData = weeks.flatMap { week in
+                            week.contributionDays.map { day in
+                                AppModel.ContributionDay(
+                                    date: day.date,  // This is now a String
+                                    contributionCount: day.contributionCount
+                                )
+                            }
+                        }
+                    }
+                    
+                    print("Total contributions: \(appModel.totalContributions ?? 0)")
+                    print("Contribution data count: \(appModel.contributionData.count)")
                 }
             }) {
                 Text("Submit")
