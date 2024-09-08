@@ -42,17 +42,21 @@ struct VolumetricView: View {
         let daysInWeek = 7
         let spacing: Float = 0.02
         let maxHeight: Float = 0.1
+        let cubeWidth: Float = 0.015
+        
+        let totalWidth = Float(weeksInYear - 1) * spacing
+        let totalDepth = Float(daysInWeek - 1) * spacing
         
         for (index, day) in appModel.contributionData.enumerated() {
             let weekIndex = index / daysInWeek
             let dayIndex = index % daysInWeek
             
-            let x = Float(weekIndex) * spacing
-            let z = Float(dayIndex) * spacing
+            let x = Float(weekIndex) * spacing - totalWidth / 2
+            let z = Float(dayIndex) * spacing - totalDepth / 2
             
             let height = Float(day.contributionCount) / Float(appModel.contributionData.max { $0.contributionCount < $1.contributionCount }?.contributionCount ?? 1) * maxHeight
             
-            let cube = createCube(size: SIMD3<Float>(0.015, height, 0.015), color: colorForContributions(day.contributionCount))
+            let cube = createCube(size: SIMD3<Float>(cubeWidth, height, cubeWidth), color: colorForContributions(day.contributionCount))
             cube.position = SIMD3<Float>(x, height / 2, z)
             
             rootEntity.addChild(cube)
