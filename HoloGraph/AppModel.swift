@@ -18,4 +18,9 @@ class AppModel {
         case open
     }
     var immersiveSpaceState = ImmersiveSpaceState.closed
+    
+    // Add this line
+    var isVolumetricWindowVisible = false
+    
+    var totalContributions: Int?
 }

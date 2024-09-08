@@ -35,6 +35,10 @@ let apolloClient: ApolloClient = {
 }()
 
 struct ContentView: View {
+    @Environment(AppModel.self) private var appModel
+    @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismissWindow) private var dismissWindow
+
     @State var userName: String = ""
     @State var totalContributions: Int? = nil
 
@@ -43,27 +47,38 @@ struct ContentView: View {
             Text("Holo Graph")
             
             Text("Total Contributions: \(totalContributions ?? 0)")
-            // A input field to type Github username and a submit button
+            
             TextField("Github username", text: $userName)
                 .padding()
                 .background(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 1))
                 .padding()
             
-            // Submit button
-            Button(
-action: {
+            Button(action: {
                 apolloClient.fetch(query: Github.GitHubUserDataQuery(userName: userName)) { result in
                     guard let data = try? result.get().data else { return }
                     
-                    totalContributions = data.user?.contributionsCollection.contributionCalendar.totalContributions
-                    print(totalContributions!)
+                    appModel.totalContributions = data.user?.contributionsCollection.contributionCalendar.totalContributions
+                    print(appModel.totalContributions ?? 0)
                 }
             }) {
                 Text("Submit")
             }
 
+            // Add this toggle button
+            Toggle("Show Volumetric Window", isOn: Binding(
+                get: { appModel.isVolumetricWindowVisible },
+                set: { appModel.isVolumetricWindowVisible = $0 }
+            ))
+                .padding()
         }
         .padding()
+        .onChange(of: appModel.isVolumetricWindowVisible) { _, isVisible in
+            if isVisible {
+                openWindow(id: "VolumetricWindow")
+            } else {
+                dismissWindow(id: "VolumetricWindow")
+            }
+        }
     }
 }
 
