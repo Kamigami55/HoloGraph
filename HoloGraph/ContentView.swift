@@ -38,26 +38,25 @@ struct ContentView: View {
     @Environment(AppModel.self) private var appModel
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
-
-    @State var userName: String = ""
-    @State var totalContributions: Int? = nil
+    
 
     var body: some View {
+        @Bindable var appModel = appModel
+
         VStack {
             Text("Holo Graph")
             
-            Text("Total Contributions: \(totalContributions ?? 0)")
+            Text("Total Contributions: \(appModel.totalContributions ?? 0)")
             
-            TextField("Github username", text: $userName)
+            TextField("Github username", text: $appModel.userName)
                 .padding()
                 .background(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 1))
                 .padding()
             
             Button(action: {
-                apolloClient.fetch(query: Github.GitHubUserDataQuery(userName: userName)) { result in
+                apolloClient.fetch(query: Github.GitHubUserDataQuery(userName: appModel.userName)) { result in
                     guard let data = try? result.get().data else { return }
                     
-                    appModel.userName = userName
                     appModel.totalContributions = data.user?.contributionsCollection.contributionCalendar.totalContributions
                     
                     // Parse and store contribution data
@@ -65,7 +64,7 @@ struct ContentView: View {
                         appModel.contributionData = weeks.flatMap { week in
                             week.contributionDays.map { day in
                                 AppModel.ContributionDay(
-                                    date: day.date,  // This is now a String
+                                    date: day.date,
                                     contributionCount: day.contributionCount
                                 )
                             }
