@@ -50,15 +50,17 @@ struct VolumetricView: View {
         // Create and add the platform
         let platformWidth = totalWidth + cubeWidth
         let platformDepth = totalDepth + cubeWidth
-        let platformHeight: Float = 0.005
+        let platformHeight: Float = 0.02  // Increased thickness
         let platformColor = UIColor.gray.withAlphaComponent(0.5)
 
         let gridMaterial: RealityKit.Material = createGridMaterial(width: platformWidth, height: platformDepth, color: .gray)
+        let solidMaterial = SimpleMaterial(color: platformColor, isMetallic: false)
+        
         let platform = ModelEntity(
-            mesh: .generatePlane(width: platformWidth, depth: platformDepth, cornerRadius: 0),
-            materials: [gridMaterial]
+            mesh: .generateBox(width: platformWidth, height: platformHeight, depth: platformDepth),
+            materials: [solidMaterial, gridMaterial]
         )
-        platform.position = SIMD3<Float>(0, -0.001, 0)  // Slightly below the cubes
+        platform.position = SIMD3<Float>(0, -platformHeight / 2, 0)  // Position adjusted for thickness
         rootEntity.addChild(platform)
         
         for (index, day) in appModel.contributionData.enumerated() {
@@ -99,7 +101,10 @@ struct VolumetricView: View {
         let size = CGSize(width: 512, height: 512)
         let renderer = UIGraphicsImageRenderer(size: size)
         let image = renderer.image { context in
-            color.setStroke()
+            UIColor.clear.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+            
+            color.withAlphaComponent(0.5).setStroke()
             let path = UIBezierPath()
             let stepX = size.width / CGFloat(width / 0.02)
             let stepY = size.height / CGFloat(height / 0.02)
@@ -116,14 +121,17 @@ struct VolumetricView: View {
                 path.addLine(to: CGPoint(x: size.width, y: y))
             }
             
-            path.lineWidth = 1
+            path.lineWidth = 2
             path.stroke()
         }
         
         let texture = try! TextureResource.generate(from: image.cgImage!, options: .init(semantic: .color))
         
-        var material = UnlitMaterial()
-        material.color = .init(tint: .white.withAlphaComponent(0.3), texture: MaterialParameters.Texture(texture))
+        var material = PhysicallyBasedMaterial()
+        material.baseColor = .init(tint: .white, texture: MaterialParameters.Texture(texture))
+        material.roughness = 1.0
+        material.metallic = 0.0
+        material.blending = .transparent(opacity: .init(floatLiteral: 1.0))
         
         return material
     }
