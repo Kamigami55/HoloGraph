@@ -171,6 +171,7 @@ struct VolumetricView: View {
 extension AppModel {
     static func sampleModel() -> AppModel {
         let model = AppModel()
+        model.userName = "Kamigami55"
         model.totalContributions = 1000
         model.contributionData = (0..<365).map { index in
             let date = Date().addingTimeInterval(TimeInterval(-index * 86400))

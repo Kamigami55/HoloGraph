@@ -57,6 +57,7 @@ struct ContentView: View {
                 apolloClient.fetch(query: Github.GitHubUserDataQuery(userName: userName)) { result in
                     guard let data = try? result.get().data else { return }
                     
+                    appModel.userName = userName
                     appModel.totalContributions = data.user?.contributionsCollection.contributionCalendar.totalContributions
                     
                     // Parse and store contribution data

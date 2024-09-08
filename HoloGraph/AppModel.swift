@@ -21,6 +21,7 @@ class AppModel {
     
     var isVolumetricWindowVisible = false
     
+    var userName: String = ""
     var totalContributions: Int?
 
     struct ContributionDay {
